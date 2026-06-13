@@ -1,0 +1,21 @@
+# 公开训练参数摘要；最终参数以正式提交模型卡为准。
+base_model: PaddleOCR-VL-1.6
+task: developer_code_ocr
+prompt: "<image>OCR:"
+finetune_method: LoRA
+status: iterative
+
+recommended_inference:
+  max_tokens: 4096
+  repetition_penalty: 1.10
+  temperature: 0
+
+data_policy:
+  train_data_public: false
+  eval_data_public_in_github: false
+  frozen_benchmark_used_for_training: false
+
+notes:
+  - "训练仍在迭代中，公开仓库仅保留策略摘要。"
+  - "完整训练 notebook 不放入公开仓库。"
+  - "最终模型参数和评测结果以 Hugging Face 模型卡为准。"
