@@ -79,7 +79,7 @@ benchmark v4 包含 100 个样本，覆盖 8 类开发 OCR 场景。评估采用
 | 平均 LLM | 74.05 |
 | 平均 NED | 0.1360 |
 
-完整 benchmark 见 [docs/ocr_benchmark_v4.md](docs/ocr_benchmark_v4.md)。
+完整 benchmark 与 demo 说明见 [GitHub docs/ocr_benchmark_v4.md](https://github.com/snnh/paddleocr-vl-code-ocr/blob/main/docs/ocr_benchmark_v4.md)。
 
 ## 局限性
 
