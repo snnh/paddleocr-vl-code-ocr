@@ -2,7 +2,7 @@
 
 本仓库是 PaddleOCR 全球衍生模型挑战赛使用的公开项目仓库，根目录展示项目入口，`dataset/` 放数据构建与说明，`train/` 放训练策略摘要，`evaluate/` 放评估脚本，`demo/` 放最小演示，`docs/` 放详细文档。
 
-> 当前模型和数据仍在迭代中。最终模型、模型地址和正式评测结果以提交截止前发布版本为准。
+> 当前初赛提交候选为 v6。模型、文档和 benchmark 已按 2026-06-19 版本同步。
 
 ## 任务目标
 
@@ -27,12 +27,12 @@
 | --- | --- |
 | 基础模型 | PaddleOCR-VL-1.6 |
 | 任务方向 | 代码文字识别 / 开发场景 OCR |
-| 训练状态 | 持续迭代中 |
+| 训练状态 | 初赛提交候选 v6 |
 | 测试集 | benchmark v4，100 题冻结测试集 |
-| 推荐推理口径 | `max_tokens=4096, repetition_penalty=1.10, temperature=0` |
-| 模型发布 | 待 Hugging Face 最终链接 |
+| 推荐推理口径 | `max_tokens=4096, repetition_penalty=1.08, temperature=0` |
+| 模型发布 | https://huggingface.co/snnh/paddleocr_vl_code_ocr |
 
-阶段性 benchmark 见 [docs/ocr_benchmark_v4.md](docs/ocr_benchmark_v4.md)。其中分数仅表示当前内部回归状态，不代表最终提交模型。
+benchmark 见 [docs/ocr_benchmark_v4.md](docs/ocr_benchmark_v4.md)。当前 v6 在 benchmark v4 固定 100 题上最终积分为 `61.08`。
 
 ## 仓库结构
 

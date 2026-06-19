@@ -1,8 +1,22 @@
+---
+language:
+- zh
+- en
+base_model: PaddlePaddle/PaddleOCR-VL-1.6
+pipeline_tag: image-text-to-text
+tags:
+- paddleocr
+- ocr
+- vision-language
+- code-ocr
+- developer-tools
+---
+
 # PaddleOCR-VL-1.6 开发场景代码 OCR 微调模型
 
-这是 PaddleOCR 全球衍生模型挑战赛提交用模型卡草稿。本文档中文优先，必要英文术语仅用于模型平台兼容。
+这是 PaddleOCR 全球衍生模型挑战赛提交用模型卡。本文档中文优先，必要英文术语仅用于模型平台兼容。
 
-> 当前训练仍在迭代中。模型文件和正式评测结果以 Hugging Face 最终发布版本为准。
+当前初赛提交候选为 v6。
 
 ## 模型简介
 
@@ -17,12 +31,12 @@
 ## 基础模型
 
 - 基础模型：PaddleOCR-VL-1.6。
-- 微调方式：LoRA 微调。
+- 微调方式：LoRA 微调后导出合并模型。
 - 目标任务：代码文字识别 / 开发工具 OCR。
 
 ## 数据概况
 
-训练数据仍在清洗和补充中，公开仓库仅说明数据类型和质量控制方法。数据主要覆盖：
+当前训练索引 `train.json` 共 1102 条样本。公开仓库不直接发布训练数据，只说明数据类型和质量控制方法。数据主要覆盖：
 
 - IDE / 编辑器代码截图。
 - 终端、Shell、PowerShell 命令和输出。
@@ -43,15 +57,29 @@
 
 ```text
 max_tokens=4096
-repetition_penalty=1.10
+repetition_penalty=1.08
 temperature=0
 ```
 
 ## 阶段性评估
 
-benchmark v4 包含 100 个样本，覆盖 8 类开发 OCR 场景。评估采用六维 LLM 裁判，并按类别权重汇总最终分。
+benchmark v4 包含 100 个样本，覆盖 8 类开发 OCR 场景。评估采用六维 LLM 裁判，并按类别权重汇总最终分。测试集不参与训练和训练期调参。
 
-当前公开仓库中的 benchmark 表仅作为阶段性回归记录，最终分数以模型正式发布时的模型卡更新为准。
+当前提交候选 v6 在 benchmark v4 上的结果：
+
+| 指标 | 数值 |
+| --- | ---: |
+| final_score_v4 | 61.08 |
+| 全局六维分 | 64.06 |
+| 类别宏平均 | 63.86 |
+| 最弱类别 | 44.54 |
+| 严格可用率 | 47.00% |
+| 完成率 | 96.00% |
+| 安全分 | 79.00% |
+| 平均 LLM | 74.05 |
+| 平均 NED | 0.1360 |
+
+完整 benchmark 见 [docs/ocr_benchmark_v4.md](docs/ocr_benchmark_v4.md)。
 
 ## 局限性
 
