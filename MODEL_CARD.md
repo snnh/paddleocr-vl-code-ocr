@@ -2,6 +2,7 @@
 language:
 - zh
 - en
+license: apache-2.0
 base_model: PaddlePaddle/PaddleOCR-VL-1.6
 pipeline_tag: image-text-to-text
 tags:
@@ -96,7 +97,9 @@ benchmark v4 包含 100 个样本，覆盖 8 类开发 OCR 场景。评估采用
 
 ## 许可说明
 
-GitHub 仓库中的代码、脚本、配置摘要和文档按 Apache License 2.0 开源，除非具体文件另有说明。模型权重、基础模型、第三方数据集和比赛单独提交的评估集不因本仓库许可证而被重新授权，仍受各自来源的许可、使用条款和限制约束。
+本 Hugging Face 仓库发布的微调模型权重按 Apache License 2.0 开源。GitHub 仓库中的代码、脚本、配置摘要和文档同样按 Apache License 2.0 开源，除非具体文件另有说明。
+
+基础模型 PaddleOCR-VL-1.6 本身标注为 Apache-2.0。第三方数据集、训练/评估来源素材和比赛单独提交的评估集不随模型权重或 GitHub 仓库重新分发、重新授权，仍受各自来源的许可、使用条款和限制约束。
 
 ## 致谢
 

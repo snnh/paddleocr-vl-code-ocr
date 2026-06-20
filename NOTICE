@@ -9,8 +9,13 @@ This project builds on PaddleOCR-VL / PaddleOCR by PaddlePaddle. PaddleOCR
 is licensed under the Apache License, Version 2.0.
 
 The Apache-2.0 license in this repository applies to the repository code,
-scripts, and documentation unless a file states otherwise. It does not
-relicense third-party datasets, benchmark/evaluation datasets submitted
-separately for the competition, upstream models, or model weights hosted on
-external platforms. Those artifacts remain subject to their own licenses,
-terms, and source-specific restrictions.
+scripts, configuration summaries, and documentation unless a file states
+otherwise. The fine-tuned model weights published at
+snnh/paddleocr_vl_code_ocr are also released under the Apache License,
+Version 2.0.
+
+This notice does not relicense third-party datasets, training/evaluation
+source materials, or benchmark/evaluation datasets submitted separately for
+the competition. Those artifacts remain subject to their own licenses,
+terms, and source-specific restrictions. The upstream PaddleOCR-VL base
+model remains subject to its own license.

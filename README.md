@@ -109,7 +109,7 @@ python .\demo\openai_compatible_ocr_demo.py --image .\examples\sample.png
 
 本仓库中的代码、脚本、配置摘要和文档默认按 [Apache License 2.0](LICENSE) 开源，除非具体文件另有说明。
 
-该许可不重新授权第三方数据集、比赛单独提交的评估集、上游基础模型或外部平台托管的模型权重；这些内容仍受各自来源的许可、使用条款和限制约束。相关说明见 [NOTICE](NOTICE)。
+Hugging Face 上发布的微调模型权重同样按 Apache License 2.0 开源。第三方数据集、训练/评估来源素材和比赛单独提交的评估集不随本仓库或模型权重重新分发、重新授权，仍受各自来源的许可、使用条款和限制约束。相关说明见 [NOTICE](NOTICE)。
 
 ## 局限性
 
