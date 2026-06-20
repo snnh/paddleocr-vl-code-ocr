@@ -1,0 +1,16 @@
+PaddleOCR-VL Code OCR
+Copyright 2026 sunjunhao
+
+This repository contains code, scripts, configuration summaries, and
+documentation for a PaddleOCR-VL-1.6 fine-tuned model targeting developer
+scenario OCR.
+
+This project builds on PaddleOCR-VL / PaddleOCR by PaddlePaddle. PaddleOCR
+is licensed under the Apache License, Version 2.0.
+
+The Apache-2.0 license in this repository applies to the repository code,
+scripts, and documentation unless a file states otherwise. It does not
+relicense third-party datasets, benchmark/evaluation datasets submitted
+separately for the competition, upstream models, or model weights hosted on
+external platforms. Those artifacts remain subject to their own licenses,
+terms, and source-specific restrictions.
