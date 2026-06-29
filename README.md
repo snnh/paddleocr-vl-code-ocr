@@ -4,6 +4,12 @@
 
 > 当前初赛提交候选为 v6。模型、文档和 benchmark 已按 2026-06-19 版本同步。
 
+## 在线 Demo
+
+🤗 **Hugging Face Space**：[paddleocr-vl-code-ocr-demo](https://huggingface.co/spaces/snnh/paddleocr-vl-code-ocr-demo)
+
+上传一张开发场景截图（IDE / 终端 / Traceback / 配置 / Git diff / API 表格 / 困难样本），即可在线体验微调模型的 OCR 输出。Space 使用免费 CPU 硬件，仅作为可访问演示入口；首次加载需拉取模型权重，单图可能需要 1-5 分钟。benchmark 分数和正式复现口径以本地 GPU / OpenAI-compatible 接口结果为准。
+
 ## 任务目标
 
 项目基于 PaddleOCR-VL-1.6，面向 IDE、终端、Traceback、配置文件、Git diff、文档代码块、API 表格和困难样本等开发场景 OCR。
@@ -33,6 +39,14 @@
 | 模型发布 | https://huggingface.co/snnh/paddleocr_vl_code_ocr |
 
 benchmark 见 [docs/ocr_benchmark_v4.md](docs/ocr_benchmark_v4.md)。当前 v6 在 benchmark v4 固定 100 题上最终积分为 `61.08`。
+
+提交材料统一口径：
+
+- 最终候选：PaddleOCR-VL-1.6 微调 v6。
+- 主提示词：`<image>OCR:`。
+- 主 benchmark：benchmark v4 固定 100 题，`final_score_v4=61.08`。
+- 推荐推理：`max_tokens=4096, repetition_penalty=1.08, temperature=0`。
+- 在线 Space：仅用于展示模型可访问性，不作为 benchmark 性能依据。
 
 ## 仓库结构
 

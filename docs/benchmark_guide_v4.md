@@ -314,7 +314,9 @@ v4 总表至少展示：
 类别 | 权重 | 题数 | final_score_v4 | 保真度诊断 | 噪声可用性 | 严格可用率 | severe | 高频错误
 ```
 
-## 第一阶段执行计划
+## 第一阶段执行计划（历史记录）
+
+以下内容是 v4 benchmark 建设早期的过程记录，用于说明测试集和评分规则如何形成；正式提交口径以本文档前部、`docs/ocr_benchmark_v4.md`、`README.md` 和模型卡中的 v6 结果为准。
 
 1. 冻结 `benchmark_v4_workspace/final_ui/`，不再改图和真值。
 2. 已新增 `evaluate/build_benchmark_v4.py`，复用 v3 评分函数并加入分类汇总。
@@ -396,4 +398,4 @@ v4 规划进入正式口径前，需要满足：
 
 v4 不改 LLM 裁判，但最终公式已改为分类加权六维分。这样既保留 v3 六维裁判经验，又让活动规则中的真实复杂场景、长尾困难样本和结构敏感样本直接影响总分。
 
-当前 Qwen3.6 Flash 在 v4 100 题上达到 `66.29`，明显高于更新 checkpoint 后本地 v5 的 `51.53`。Qwen3.6 Flash 的弱项是 Traceback `54.52` 和困难样本 `61.60`；更新 checkpoint 后本地 v5 在困难样本 `24.93`、Traceback `44.64`、表格化 API 文档 `48.62` 上仍明显掉队。下一步应继续以 v2 `55.55` 为本地回归基线，并抽样复核 Traceback、困难样本和表格类裁判结果。
+正式提交候选已更新为 PaddleOCR-VL-1.6 微调 v6。v6 使用 `<image>OCR:`、`max_tokens=4096`、`repetition_penalty=1.08`、`temperature=0`，在 benchmark v4 固定 100 题上的 `final_score_v4` 为 `61.08`。早期 v5 / v2 表格保留为历史开发记录，不再作为当前提交候选。
