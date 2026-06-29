@@ -1,8 +1,24 @@
 # PaddleOCR-VL 开发场景代码 OCR
 
-本仓库是 PaddleOCR 全球衍生模型挑战赛使用的公开项目仓库，根目录展示项目入口，`dataset/` 放数据构建与说明，`train/` 放训练策略摘要，`evaluate/` 放评估脚本，`demo/` 放最小演示，`docs/` 放详细文档。
+本仓库是 PaddleOCR 全球衍生模型挑战赛使用的公开项目仓库，目标是把 PaddleOCR-VL 微调成更适合开发场景的结构保真 OCR 模型。输入是 IDE、终端、Traceback、配置文件、Git diff、文档代码块、API 表格和困难样本截图，输出只包含图片中可见文字。
+
+这个任务不是通用代码生成，也不是普通文本 OCR。开发场景 OCR 对符号、缩进、换行、路径、表格列、diff 前缀、错误栈顺序和多区域阅读顺序敏感；一个括号、空格、行号或 `+/-` 前缀错误，都可能让 OCR 结果无法复制、搜索或复现问题。
 
 > 当前初赛提交候选为 v6。模型、文档和 benchmark 已按 2026-06-19 版本同步。
+
+## 提交口径
+
+| 项 | 当前提交 |
+| --- | --- |
+| 基础模型 | PaddleOCR-VL-1.6 |
+| 微调版本 | v6 初赛提交候选 |
+| 任务方向 | 开发场景代码 OCR / 结构保真文字转写 |
+| 主提示词 | `<image>OCR:` |
+| 主 benchmark | benchmark v4，100 题冻结测试集 |
+| v6 分数 | `final_score_v4=61.08` |
+| 推荐推理 | `max_tokens=4096, repetition_penalty=1.08, temperature=0` |
+| 模型权重 | https://huggingface.co/snnh/paddleocr_vl_code_ocr |
+| 在线演示 | https://huggingface.co/spaces/snnh/paddleocr-vl-code-ocr-demo |
 
 ## 在线 Demo
 
@@ -10,16 +26,22 @@
 
 上传一张开发场景截图（IDE / 终端 / Traceback / 配置 / Git diff / API 表格 / 困难样本），即可在线体验微调模型的 OCR 输出。Space 使用免费 CPU 硬件，仅作为可访问演示入口；首次加载需拉取模型权重，单图可能需要 1-5 分钟。benchmark 分数和正式复现口径以本地 GPU / OpenAI-compatible 接口结果为准。
 
-## 任务目标
+## 任务难点
 
-项目基于 PaddleOCR-VL-1.6，面向 IDE、终端、Traceback、配置文件、Git diff、文档代码块、API 表格和困难样本等开发场景 OCR。
+本项目聚焦普通 OCR 和通用 VLM 在开发截图中容易失效的长尾问题：
 
-普通 OCR 在代码场景中常见问题包括符号识别错误、缩进丢失、结构错乱、解释性输出、不可见补全和代码改写。本项目希望模型更稳定地做到：
+- **符号密集**：代码标点、路径分隔符、命令参数、`=>`、`::`、`[]`、`{}` 等容易被漏识别或替换。
+- **结构敏感**：Python/YAML/Markdown/树状终端输出依赖缩进、换行和层级，字符对但结构错仍不可用。
+- **多区域阅读顺序**：IDE 标签页、代码正文、终端、问题面板、diff hunk 和网页代码块经常同时出现。
+- **开发语义约束**：OCR 不能解释、修复、补全或重写代码，只能转写图片里真实可见内容。
+- **真实使用噪声**：暗色主题、小字号、压缩、拍屏、滚动区域、表格列错位和长 Traceback 都会显著降低可用性。
 
-- 只输出图片中可见文字。
-- 保留代码符号、大小写、缩进、换行和阅读顺序。
-- 减少幻觉、解释性包装和擅自补全。
-- 提高终端、Traceback、配置、Diff、API 表格等开发场景的可用性。
+模型目标是稳定做到：
+
+- 只输出图片中可见文字，不解释、不总结、不补全。
+- 保留代码符号、大小写、缩进、换行、路径和阅读顺序。
+- 减少 Markdown 包装、幻觉、重复输出和代码改写。
+- 提高终端、Traceback、配置、Diff、API 表格等开发场景的复制可用性。
 
 推荐提示词：
 
@@ -27,26 +49,28 @@
 <image>OCR:
 ```
 
-## 当前状态
+## 材料入口
 
-| 项 | 状态 |
+| 材料 | 链接 |
 | --- | --- |
-| 基础模型 | PaddleOCR-VL-1.6 |
-| 任务方向 | 代码文字识别 / 开发场景 OCR |
-| 训练状态 | 初赛提交候选 v6 |
-| 测试集 | benchmark v4，100 题冻结测试集 |
-| 推荐推理口径 | `max_tokens=4096, repetition_penalty=1.08, temperature=0` |
-| 模型发布 | https://huggingface.co/snnh/paddleocr_vl_code_ocr |
+| 模型卡 | [MODEL_CARD.md](MODEL_CARD.md) |
+| 训练策略摘要 | [train/README.md](train/README.md) |
+| LoRA 参数摘要 | [train/paddleocr_vl_code_ocr_lora_config_summary.yaml](train/paddleocr_vl_code_ocr_lora_config_summary.yaml) |
+| 数据构建报告 | [docs/训练数据构建报告.md](docs/训练数据构建报告.md) |
+| 评估规则 | [docs/benchmark_guide_v4.md](docs/benchmark_guide_v4.md) |
+| benchmark 结果 | [docs/ocr_benchmark_v4.md](docs/ocr_benchmark_v4.md) |
+| OpenAI-compatible 评估脚本 | [evaluate/](evaluate/) |
+| Demo 说明 | [demo/README.md](demo/README.md) |
 
-benchmark 见 [docs/ocr_benchmark_v4.md](docs/ocr_benchmark_v4.md)。当前 v6 在 benchmark v4 固定 100 题上最终积分为 `61.08`。
+## Benchmark 摘要
 
-提交材料统一口径：
+benchmark v4 使用 100 题冻结测试集，覆盖 8 类开发 OCR 场景，并按类别权重汇总 `final_score_v4`。测试集不参与训练和训练期调参。
 
-- 最终候选：PaddleOCR-VL-1.6 微调 v6。
-- 主提示词：`<image>OCR:`。
-- 主 benchmark：benchmark v4 固定 100 题，`final_score_v4=61.08`。
-- 推荐推理：`max_tokens=4096, repetition_penalty=1.08, temperature=0`。
-- 在线 Space：仅用于展示模型可访问性，不作为 benchmark 性能依据。
+| 模型 | 提示词 | final_score_v4 | 平均 LLM | 平均 NED | 严格可用率 | 完成率 | 安全分 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| PaddleOCR-VL-1.6 微调 v6 | `<image>OCR:` | 61.08 | 74.05 | 0.1360 | 47.00% | 96.00% | 79.00% |
+
+完整结果见 [docs/ocr_benchmark_v4.md](docs/ocr_benchmark_v4.md)。正式复现建议使用本地 GPU / vLLM / OpenAI-compatible 接口；HF Space 仅用于在线可访问演示。
 
 ## 仓库结构
 
