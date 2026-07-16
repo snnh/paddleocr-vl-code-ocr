@@ -15,6 +15,7 @@
 | 推荐推理参数 | `max_tokens=4096, repetition_penalty=1.08, temperature=0` |
 | Benchmark | v5，内容版本 5.2，304 题 |
 | 最终积分 | `final_score_v5=58.4427` |
+| 训练复现 | [公开训练入口](train/README.md)，默认预检，显式 `--run` 才启动 |
 | 模型权重 | [Hugging Face](https://huggingface.co/snnh/paddleocr_vl_code_ocr) |
 | 在线演示 | [Hugging Face Space](https://huggingface.co/spaces/snnh/paddleocr-vl-code-ocr-demo) |
 
@@ -48,7 +49,7 @@
 ├── docs/                     # 数据声明、评测规则和榜单
 ├── evaluate/                 # 推理、LLM 裁判和 v4/v5 计分脚本
 ├── skills/ocr-benchmark/     # 可复用的 Codex OCR Benchmark skill
-├── train/                    # 训练策略与参数摘要
+├── train/                    # 可执行训练入口、数据格式与参数摘要
 ├── MODEL_CARD.md
 └── app.py
 ```
@@ -65,6 +66,16 @@ python .\app.py --image .\examples\sample.png
 ```
 
 公开仓库不包含训练图片、评估集图片、模型权重或 API key。完整评测流程见 [evaluate/README.md](evaluate/README.md)。
+
+## 训练复现
+
+训练图片不公开，但仓库提供可执行的 PaddleOCR-VL-1.6 LoRA 入口。它支持 JSON/JSONL 消息格式，启动前检查图片、真值和跨集合 SHA-256 重叠，并生成与模型 v6 一致的训练配置：
+
+```powershell
+python -B .\train\train_paddleocr_vl_code_ocr.py --train-data <train.json> --final-eval-data <test.jsonl>
+```
+
+默认命令不会训练；检查生成的 YAML 后加入 `--run` 才会调用 `paddleformers-cli train`。数据格式、独立验证集和环境要求见 [训练说明](train/README.md)。
 
 ## OCR Benchmark Skill
 

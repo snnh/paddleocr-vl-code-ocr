@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="600" viewBox="0 0 1100 600" role="img" aria-labelledby="title desc">
+  <title id="title">训练数据来源分布</title>
+  <desc id="desc">训练数据共1102条，包括混合截图436条、人工筛选360条、代码渲染258条和人工转写补充48条。</desc>
+  <rect width="1100" height="600" rx="24" fill="#F7F9FC"/>
+  <text x="70" y="72" font-family="Inter, Microsoft YaHei, sans-serif" font-size="34" font-weight="700" fill="#17233C">训练数据来源分布</text>
+  <text x="70" y="112" font-family="Inter, Microsoft YaHei, sans-serif" font-size="20" fill="#526079">冻结快照：1102 条 · 四类来源分别记录，不混写</text>
+  <rect x="805" y="42" width="225" height="82" rx="16" fill="#17233C"/>
+  <text x="917.5" y="78" text-anchor="middle" font-family="Inter, Microsoft YaHei, sans-serif" font-size="18" fill="#D9E3F0">训练样本总量</text>
+  <text x="917.5" y="108" text-anchor="middle" font-family="Inter, Microsoft YaHei, sans-serif" font-size="30" font-weight="700" fill="#FFFFFF">1102</text>
+
+  <g font-family="Inter, Microsoft YaHei, sans-serif">
+    <text x="70" y="184" font-size="21" font-weight="600" fill="#17233C">混合截图</text>
+    <text x="230" y="184" font-size="18" fill="#526079">合规公开开发截图二次加工及项目作者手动截图</text>
+    <rect x="70" y="204" width="760" height="44" rx="10" fill="#E5EAF1"/>
+    <rect x="70" y="204" width="760" height="44" rx="10" fill="#1F4E79"/>
+    <text x="850" y="233" font-size="21" font-weight="700" fill="#1F4E79">436</text>
+    <text x="925" y="233" font-size="19" fill="#526079">39.56%</text>
+
+    <text x="70" y="294" font-size="21" font-weight="600" fill="#17233C">人工筛选</text>
+    <text x="230" y="294" font-size="18" fill="#526079">388 张候选经分类、人工筛选与审计后保留</text>
+    <rect x="70" y="314" width="760" height="44" rx="10" fill="#E5EAF1"/>
+    <rect x="70" y="314" width="628" height="44" rx="10" fill="#2A9D8F"/>
+    <text x="850" y="343" font-size="21" font-weight="700" fill="#2A9D8F">360</text>
+    <text x="925" y="343" font-size="19" fill="#526079">32.67%</text>
+
+    <text x="70" y="404" font-size="21" font-weight="600" fill="#17233C">代码渲染</text>
+    <text x="230" y="404" font-size="18" fill="#526079">代码、配置、命令、日志和文档片段本地渲染</text>
+    <rect x="70" y="424" width="760" height="44" rx="10" fill="#E5EAF1"/>
+    <rect x="70" y="424" width="450" height="44" rx="10" fill="#E9A23B"/>
+    <text x="850" y="453" font-size="21" font-weight="700" fill="#B56A00">258</text>
+    <text x="925" y="453" font-size="19" fill="#526079">23.41%</text>
+
+    <text x="70" y="514" font-size="21" font-weight="600" fill="#17233C">人工转写补充</text>
+    <text x="230" y="514" font-size="18" fill="#526079">研究用途许可候选逐图转写并筛选</text>
+    <rect x="70" y="534" width="760" height="44" rx="10" fill="#E5EAF1"/>
+    <rect x="70" y="534" width="84" height="44" rx="10" fill="#D96C5F"/>
+    <text x="850" y="563" font-size="21" font-weight="700" fill="#B84437">48</text>
+    <text x="925" y="563" font-size="19" fill="#526079">4.36%</text>
+  </g>
+</svg>
