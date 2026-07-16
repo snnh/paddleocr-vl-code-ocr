@@ -1,0 +1,4 @@
+interface:
+  display_name: "OCR Benchmark"
+  short_description: "运行可配置的 OCR 推理、裁判、计分、报告与排行"
+  default_prompt: "使用 $ocr-benchmark 运行或续跑一个可配置的 OCR 评测，并输出经过核验的报告与排行。"

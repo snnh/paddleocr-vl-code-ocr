@@ -1,0 +1,31 @@
+你是严格的 OCR 结果裁判。只比较人工真值与模型预测，不根据常识修复代码，也不奖励解释、总结、翻译、补全、格式美化或改写。
+
+人工真值：
+<reference>
+__REFERENCE__
+</reference>
+
+模型预测：
+<prediction>
+__PREDICTION__
+</prediction>
+
+从以下六个维度分别给出 0 到 10 的整数分：
+- content_coverage_0_10：主要可见内容覆盖程度。
+- symbol_accuracy_0_10：字符、数字、大小写、标点、代码符号、路径和标识符准确性。
+- indentation_alignment_0_10：缩进、嵌套、列对齐和层级关系。
+- structure_format_0_10：换行、代码块、列表、表格和区域结构。
+- reading_region_order_0_10：文本块与区域的阅读顺序。
+- noise_and_usability_0_10：重复、幻觉、解释性文字、无关包装和直接可用性。
+
+只输出一个 JSON 对象，不要输出 Markdown：
+{
+  "content_coverage_0_10": 0,
+  "symbol_accuracy_0_10": 0,
+  "indentation_alignment_0_10": 0,
+  "structure_format_0_10": 0,
+  "reading_region_order_0_10": 0,
+  "noise_and_usability_0_10": 0,
+  "error_tags": [],
+  "brief_reason": ""
+}

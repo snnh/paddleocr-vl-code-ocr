@@ -10,12 +10,55 @@ import time
 import requests
 
 
-PROMPT_VERSION = "dev_ocr_judge_v4"
-DEFAULT_URL = "http://127.0.0.1:3000/v1/chat/completions"
-DEFAULT_MODEL = "deepseek-v4-flash"
+PROMPT_VERSION = "dev_ocr_judge_v5_compat"
 USABILITY_SCORE_THRESHOLD = 75
 USABILITY_NOISE_THRESHOLD = 6
 COMPLETION_NOISE_THRESHOLD = 1
+
+JUDGE_JSON_SCHEMA = {
+    "name": "dev_ocr_judge_result",
+    "schema": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": [
+            "score_0_100",
+            "grade",
+            "dimension_scores",
+            "subjective_adjustment_m5_p4",
+            "error_tags",
+            "needs_human_review",
+            "brief_reason",
+        ],
+        "properties": {
+            "score_0_100": {"type": "integer", "minimum": 0, "maximum": 100},
+            "grade": {"type": "string", "enum": ["A", "B", "C", "D", "E"]},
+            "dimension_scores": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": [
+                    "content_coverage_0_10",
+                    "symbol_accuracy_0_10",
+                    "indentation_alignment_0_10",
+                    "structure_format_0_10",
+                    "reading_region_order_0_10",
+                    "noise_and_usability_0_10",
+                ],
+                "properties": {
+                    "content_coverage_0_10": {"type": "integer", "minimum": 0, "maximum": 10},
+                    "symbol_accuracy_0_10": {"type": "integer", "minimum": 0, "maximum": 10},
+                    "indentation_alignment_0_10": {"type": "integer", "minimum": 0, "maximum": 10},
+                    "structure_format_0_10": {"type": "integer", "minimum": 0, "maximum": 10},
+                    "reading_region_order_0_10": {"type": "integer", "minimum": 0, "maximum": 10},
+                    "noise_and_usability_0_10": {"type": "integer", "minimum": 0, "maximum": 10},
+                },
+            },
+            "subjective_adjustment_m5_p4": {"type": "number", "minimum": -5, "maximum": 4},
+            "error_tags": {"type": "array", "items": {"type": "string"}},
+            "needs_human_review": {"type": "boolean"},
+            "brief_reason": {"type": "string"},
+        },
+    },
+}
 
 SYSTEM_PROMPT = """你是开发场景 OCR 评测裁判。只比较人工真值 label 与模型预测 prediction，判断 prediction 是否忠实还原、是否不影响开发者使用。
 
@@ -46,7 +89,7 @@ USER_PROMPT_TEMPLATE = """请比较 OCR 真值和模型预测，并按规则输�
 - reading_region_order_0_10：阅读顺序与区域顺序。代码、配置、终端、错误列表、补全框顺序要严格；非代码 UI 区域轻微换序且不影响理解时可轻扣或不扣。
 - noise_and_usability_0_10：噪声控制与开发可用性。衡量重复、幻觉、无关文本、解释性文字、交付外包装，以及 prediction 是否可直接给开发者使用。
 
-score_0_100 是六项等权折算展示分，不代表最终 benchmark 权重；最终加权、阈值和惩罚由 benchmark v3 单独计算。
+score_0_100 是六项等权折算展示分，不代表最终 benchmark 权重；最终加权、阈值和惩罚由具体 benchmark 版本单独计算。
 subjective_adjustment_m5_p4 范围为 -5 到 4，默认 0：
 - 六维分已充分反映问题时，不要重复扣分。
 - 整体可用性明显低于六维分反映时，给 -1 到 -5。
@@ -263,6 +306,21 @@ def call_judge(record, api_key, args):
         payload["temperature"] = args.temperature
     if args.max_tokens:
         payload["max_tokens"] = args.max_tokens
+    if args.response_format_json:
+        payload["response_format"] = {"type": "json_object"}
+    if args.response_format_json_schema:
+        payload["response_format"] = {"type": "json_schema", "json_schema": JUDGE_JSON_SCHEMA}
+    if args.reasoning_object_effort or args.reasoning_exclude or args.reasoning_max_tokens is not None:
+        reasoning = {}
+        if args.reasoning_object_effort:
+            reasoning["effort"] = args.reasoning_object_effort
+        if args.reasoning_max_tokens is not None:
+            reasoning["max_tokens"] = args.reasoning_max_tokens
+        if args.reasoning_exclude:
+            reasoning["exclude"] = True
+        payload["reasoning"] = reasoning
+    if args.reasoning_effort:
+        payload["reasoning_effort"] = args.reasoning_effort
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     response = None
     last_error = None
@@ -283,9 +341,19 @@ def call_judge(record, api_key, args):
         raise RuntimeError(f"request failed: {last_error}")
     if response.status_code != 200:
         raise RuntimeError(f"request failed: HTTP {response.status_code}: {response.text[:800]}")
-    data = response.json()
+    try:
+        data = response.json()
+    except ValueError as exc:
+        raise ValueError(f"invalid JSON response body: {response.text[:500]}") from exc
     content = data["choices"][0]["message"]["content"]
-    return validate_judgement(extract_json(content))
+    if not isinstance(content, str):
+        content = json.dumps(content, ensure_ascii=False)
+    if not content.strip():
+        raise ValueError(f"empty judge content: {json.dumps(data, ensure_ascii=False)[:1000]}")
+    parsed = extract_json(content)
+    if not isinstance(parsed, dict):
+        raise ValueError(f"judge content is not an object: {content[:500]}")
+    return validate_judgement(parsed)
 
 
 def write_jsonl(path: Path, payload):
@@ -305,7 +373,7 @@ def trimmed_mean(values):
     return sum(trimmed) / len(trimmed)
 
 
-def write_summary(path: Path, output_path: Path, model: str, source_path: Path):
+def write_summary(path: Path, output_path: Path, model: str, source_path: Path, prompt_version: str):
     records = list(load_done(output_path).values())
     scores = [record["score_0_100"] for record in records]
     noise_scores = []
@@ -326,7 +394,7 @@ def write_summary(path: Path, output_path: Path, model: str, source_path: Path):
             tags[tag] = tags.get(tag, 0) + 1
     summary = {
         "judge_model": model,
-        "judge_prompt_version": PROMPT_VERSION,
+        "judge_prompt_version": prompt_version,
         "source": str(source_path),
         "samples": len(records),
         "avg_llm_score": sum(scores) / len(scores) if scores else None,
@@ -387,13 +455,21 @@ def parse_args():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--summary", type=Path, required=True)
     parser.add_argument("--errors", type=Path, required=True)
-    parser.add_argument("--url", default=DEFAULT_URL)
-    parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--url", required=True)
+    parser.add_argument("--model", required=True)
+    parser.add_argument("--prompt-version", default=PROMPT_VERSION)
     parser.add_argument("--api-key")
     parser.add_argument("--api-key-env", default="OPENAI_API_KEY")
     parser.add_argument("--api-key-file", type=Path)
     parser.add_argument("--temperature", type=float, default=None)
     parser.add_argument("--max-tokens", type=int, default=800)
+    response_format = parser.add_mutually_exclusive_group()
+    response_format.add_argument("--response-format-json", action="store_true")
+    response_format.add_argument("--response-format-json-schema", action="store_true")
+    parser.add_argument("--reasoning-effort", choices=["low", "medium", "high"])
+    parser.add_argument("--reasoning-object-effort", choices=["none", "minimal", "low", "medium", "high", "xhigh", "max"])
+    parser.add_argument("--reasoning-max-tokens", type=int)
+    parser.add_argument("--reasoning-exclude", action="store_true")
     parser.add_argument("--timeout", type=float, default=120.0)
     parser.add_argument("--retries", type=int, default=2)
     parser.add_argument("--retry-sleep-seconds", type=float, default=5.0)
@@ -412,7 +488,7 @@ def judge_one(record, api_key, args):
         "prediction_chars": record.get("prediction_chars"),
         **judgement,
         "judge_model": args.model,
-        "judge_prompt_version": PROMPT_VERSION,
+        "judge_prompt_version": args.prompt_version,
     }
     return payload
 
@@ -422,6 +498,12 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     args = parse_args()
+    if args.workers < 1:
+        raise SystemExit("--workers must be >= 1")
+    if args.reasoning_effort and (
+        args.reasoning_object_effort or args.reasoning_exclude or args.reasoning_max_tokens is not None
+    ):
+        raise SystemExit("use either --reasoning-effort or reasoning object options, not both")
     api_key = load_api_key(args)
     records = load_records(args.input)
     if args.limit is not None:
@@ -458,7 +540,7 @@ def main():
                 except Exception as exc:
                     write_jsonl(args.errors, {"image": image, "error": str(exc), "judge_model": args.model})
                     print(f"[{offset}/{len(pending)}] {image} error: {exc}", file=sys.stderr, flush=True)
-    summary = write_summary(args.summary, args.output, args.model, args.input)
+    summary = write_summary(args.summary, args.output, args.model, args.input, args.prompt_version)
     print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
 
 

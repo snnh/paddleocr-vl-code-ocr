@@ -3,7 +3,8 @@ base_model: PaddleOCR-VL-1.6
 task: developer_code_ocr
 prompt: "<image>OCR:"
 finetune_method: LoRA
-status: preliminary_submission_v6
+model_version: v6
+competition_stage: finals_technical_freeze
 
 recommended_inference:
   max_tokens: 4096
@@ -23,13 +24,14 @@ v6_training_summary:
   adam_beta2: 0.95
   seed: 23
 
-benchmark_v4:
-  final_score_v4: 61.08
-  avg_llm_score: 74.05
-  avg_ned: 0.1360
-  strict_usable_rate: 0.47
-  completion_rate: 0.96
-  safety_score: 0.79
+benchmark_v5_content_5_2:
+  samples: 304
+  final_score_v5: 58.4427
+  global_sample_mean_score_v5: 73.3494
+  avg_ned: 0.1744
+  direct_usable_rate: 0.381579
+  completion_rate: 0.990132
+  safety_score: 0.907895
 
 data_policy:
   train_data_public: false
@@ -37,6 +39,7 @@ data_policy:
   frozen_benchmark_used_for_training: false
 
 notes:
-  - "当前初赛提交候选为 v6，公开仓库仅保留策略摘要。"
+  - "v6 是模型版本；Benchmark v5 和内容版本 5.2 是评测版本。"
+  - "模型 v6 是当前决赛技术冻结方案，公开仓库仅保留策略摘要。"
   - "完整训练 notebook 不放入公开仓库。"
   - "正式模型文件发布在 Hugging Face: https://huggingface.co/snnh/paddleocr_vl_code_ocr"

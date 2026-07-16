@@ -1,5 +1,7 @@
 # 开发场景 OCR Benchmark v4 规划
 
+> 本文是历史评测规则。v4 是 Benchmark 版本，文中的 v6 是模型版本；当前规则见 [benchmark_guide_v5.md](benchmark_guide_v5.md)。
+
 更新时间：2026-06-10
 
 ## 目标
@@ -398,4 +400,4 @@ v4 规划进入正式口径前，需要满足：
 
 v4 不改 LLM 裁判，但最终公式已改为分类加权六维分。这样既保留 v3 六维裁判经验，又让活动规则中的真实复杂场景、长尾困难样本和结构敏感样本直接影响总分。
 
-正式提交候选已更新为 PaddleOCR-VL-1.6 微调 v6。v6 使用 `<image>OCR:`、`max_tokens=4096`、`repetition_penalty=1.08`、`temperature=0`，在 benchmark v4 固定 100 题上的 `final_score_v4` 为 `61.08`。早期 v5 / v2 表格保留为历史开发记录，不再作为当前提交候选。
+该阶段使用 PaddleOCR-VL-1.6 模型 v6。模型 v6 使用 `<image>OCR:`、`max_tokens=4096`、`repetition_penalty=1.08`、`temperature=0`，在 Benchmark v4 固定 100 题上的 `final_score_v4` 为 `61.08`。模型 v5 / v2 表格保留为历史开发记录；当前公开结果以 Benchmark v5 内容版本 5.2 为准。

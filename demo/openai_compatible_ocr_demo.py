@@ -18,7 +18,7 @@ def main() -> None:
     parser.add_argument("--image", required=True, type=Path, help="输入图片路径")
     parser.add_argument("--prompt", default="<image>OCR:", help="OCR 提示词")
     parser.add_argument("--max-tokens", type=int, default=4096)
-    parser.add_argument("--repetition-penalty", type=float, default=1.10)
+    parser.add_argument("--repetition-penalty", type=float, default=1.08)
     args = parser.parse_args()
 
     api_key = os.environ.get("OPENAI_API_KEY", "EMPTY")
